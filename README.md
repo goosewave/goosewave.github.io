@@ -1,2 +1,2 @@
-# goosewave.github.io
-Lucas Poirier's Website
+# Lucas Poirier's Website
+
