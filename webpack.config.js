@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './main.js', // Your main script file
+    entry: './main.js',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
@@ -22,9 +22,18 @@ module.exports = {
                     },
                 },
             },
+            {
+                test: /\.stl$/,
+                use: ['file-loader'],
+            },
         ],
     },
     devServer: {
-        contentBase: './dist',
+        static: {
+            directory: path.join(__dirname, 'dist'),
+        },
+        compress: true,
+        port: 8888,
+        open: true,
     },
 };

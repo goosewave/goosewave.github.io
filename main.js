@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 console.log("Script 1 loaded successfully");
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'; // Make sure the path is correct
+console.log("test");
+
+// Ensure the path is correct and accessible
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 
 console.log("Script 2 loaded successfully");
 
@@ -17,18 +20,18 @@ const loader = new STLLoader();
 loader.load('Whistler_-_British_Columbia.STL', function (geometry) {
     const material = new THREE.MeshNormalMaterial({ flatShading: true });
     stlModel = new THREE.Mesh(geometry, material);
-    stlModel.rotation.x = Math.PI / 2; // Adjust the model's initial rotation as needed
+    stlModel.rotation.x = Math.PI / 2;
     scene.add(stlModel);
 }, undefined, function (error) {
-    console.error(error);
+    console.error('Error loading STL file:', error);
 });
 
-camera.position.z = 50; // Adjust camera distance so the STL model fits into view
+camera.position.z = 50;
 
 function animate() {
     requestAnimationFrame(animate);
     if (stlModel) {
-        stlModel.rotation.z += 0.01; // Rotate the STL model
+        stlModel.rotation.z += 0.01;
     }
     renderer.render(scene, camera);
 }
