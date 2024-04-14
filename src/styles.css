@@ -1,0 +1,10 @@
+body {
+    background-color: white;  /* Sets the background color to white */
+    color: black;             /* Sets the text color to black */
+    font-family: Arial, sans-serif; /* Sets the font of the text */
+    display: flex;
+    align-items: center;     /* Centers text vertically */
+    justify-content: center; /* Centers text horizontally */
+    height: 100vh;           /* Uses 100% of the viewport height */
+    margin: 0;               /* Removes default margin */
+}
