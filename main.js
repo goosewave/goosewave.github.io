@@ -1,4 +1,4 @@
-import * as THREE from './js/three.module.min.js';
+import * as THREE from './js/three.module.js';
 console.log("Script loaded successfully");
 
 const scene = new THREE.Scene();
