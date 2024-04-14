@@ -1,7 +1,5 @@
-import * as THREE from './js/three.module.js';
+import * as THREE from 'three';
 console.log("Script 1 loaded successfully");
-import { STLLoader } from './js/STLLoader.js';
-console.log("Script 2 loaded successfully");
 
 
 const scene = new THREE.Scene();
