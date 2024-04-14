@@ -1,5 +1,8 @@
 import * as THREE from './js/three.module.js';
-console.log("Script loaded successfully");
+console.log("Script 1 loaded successfully");
+import { STLLoader } from './js/STLLoader.js';
+console.log("Script 2 loaded successfully");
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
