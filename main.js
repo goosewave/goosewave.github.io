@@ -1,5 +1,10 @@
-import * as THREE from '../assets/js/three.module.js';  // Path adjusted for the assets folder
+console.log("Before import * as THREE");
+import * as THREE from './assets/js/three.module.js';  // Path adjusted for the assets folder
+console.log("After import * as THREE");
+
+console.log("Before import { STLLoader }");
 import { STLLoader } from '../assets/js/STLLoader.js';  // Path adjusted for the assets folder
+console.log("After import { STLLoader }");
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
