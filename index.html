@@ -3,10 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucas Poirier's Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>My Three.js Project</title>
 </head>
 <body>
-<h1>Hello World</h1>
+<script type="module">
+    import * as THREE from './js/three.module.min.js'; // Adjust the path as necessary
+
+    var scene, camera, renderer;
+    init();
+    animate();
+
+    function init() {
+        // Set up the scene
+        scene = new THREE.Scene();
+
+        // Set up the camera
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        // Set up the renderer
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Add a cube
+        var geometry = new THREE.BoxGeometry();
+        var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        var cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+</script>
 </body>
 </html>
