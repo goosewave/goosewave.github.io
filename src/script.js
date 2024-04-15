@@ -1,7 +1,7 @@
 // Import the necessary three.js classes
-import * as THREE from '../node_modules/three/build/three.module.js';
-import { STLLoader } from '../node_modules/three/examples/jsm/loaders/STLLoader.js';
-import { OrbitControls } from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 
 // Create a scene, camera, and renderer
