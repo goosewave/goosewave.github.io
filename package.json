@@ -1,0 +1,22 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goosewave/goosewave.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goosewave/goosewave.github.io/issues"
+  },
+  "homepage": "https://github.com/goosewave/goosewave.github.io#readme",
+  "dependencies": {
+    "three": "^0.163.0"
+  }
+}
