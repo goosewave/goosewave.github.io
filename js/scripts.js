@@ -5,19 +5,20 @@ document.addEventListener('DOMContentLoaded', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    const geometry = new THREE.BoxGeometry();
+    const loader = new THREE.STLLoader();
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
 
-    camera.position.z = 5;
+    loader.load('assets/Whistler_-_British_Columbia.STL', function (geometry) {
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+        camera.position.z = 50; // Adjust camera distance so the model fits in view
+        animate(mesh);
+    });
 
-    function animate() {
-        requestAnimationFrame(animate);
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
+    function animate(mesh) {
+        requestAnimationFrame(function() { animate(mesh); });
+        mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.01;
         renderer.render(scene, camera);
     }
-
-    animate();
 });
