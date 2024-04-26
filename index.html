@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Spinning STL Object 2</title>
+    <title>Spinning STL Object 3</title>
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Import Three.js globally -->
+    <script type="module">
+        window.THREE = await import('https://unpkg.com/three@0.132.2/build/three.module.js');
+        // Include STLLoader after THREE is available globally
+        await import('https://unpkg.com/three@0.132.2/examples/jsm/loaders/STLLoader.js');
+    </script>
 </head>
 <body>
-<!-- Note the type="module" here, this is necessary for using ES6 modules in the browser -->
+<!-- Your scripts.js is now a module that can use the global THREE variable -->
 <script type="module" src="js/scripts.js"></script>
 </body>
 </html>

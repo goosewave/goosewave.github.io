@@ -1,7 +1,4 @@
-// Import the necessary modules from Three.js
-import * as THREE from 'https://unpkg.com/three@0.132.2/build/three.module.js';
-import { STLLoader } from 'https://unpkg.com/three@0.132.2/examples/jsm/loaders/STLLoader.js';
-
+// scripts.js will use the global THREE object
 document.addEventListener('DOMContentLoaded', function () {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -9,30 +6,28 @@ document.addEventListener('DOMContentLoaded', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    const loader = new STLLoader();
+    // Note that we don't declare THREE or STLLoader, they're already globally available
+    const loader = new THREE.STLLoader();
 
     loader.load('assets/Whistler_-_British_Columbia.STL', function (geometry) {
-        const material = new THREE.MeshPhongMaterial({ color: 0xff0000 }); // Changed to MeshPhongMaterial for better color effect
+        const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
-        // Adjust camera and mesh position as needed to ensure the STL file is visible
+        // Adjust the camera and STL object as needed
         camera.position.z = 5;
+
+        // Basic ambient light
+        const ambientLight = new THREE.AmbientLight(0xaaaaaa);
+        scene.add(ambientLight);
 
         function animate() {
             requestAnimationFrame(animate);
-
-            // Rotate mesh here
             mesh.rotation.x += 0.01;
             mesh.rotation.y += 0.01;
-
             renderer.render(scene, camera);
         }
 
         animate();
     });
-
-    // Add some light to the scene
-    const ambientLight = new THREE.AmbientLight(0xaaaaaa);
-    scene.add(ambientLight);
 });
