@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Spinning STL Object 3</title>
+    <title>Spinning STL Object 4</title>
     <link rel="stylesheet" href="css/styles.css">
-    <!-- Import Three.js globally -->
-    <script type="module">
-        window.THREE = await import('https://unpkg.com/three@0.132.2/build/three.module.js');
-        // Include STLLoader after THREE is available globally
-        await import('https://unpkg.com/three@0.132.2/examples/jsm/loaders/STLLoader.js');
-    </script>
+    <!-- Load Three.js and STLLoader globally -->
+    <script src="https://unpkg.com/three@0.132.2/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.132.2/examples/js/loaders/STLLoader.js"></script>
 </head>
 <body>
-<!-- Your scripts.js is now a module that can use the global THREE variable -->
+<!-- Ensure your custom script is of type module -->
 <script type="module" src="js/scripts.js"></script>
 </body>
 </html>

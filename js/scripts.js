@@ -1,4 +1,4 @@
-// scripts.js will use the global THREE object
+// Use the globally available THREE and STLLoader
 document.addEventListener('DOMContentLoaded', function () {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Note that we don't declare THREE or STLLoader, they're already globally available
     const loader = new THREE.STLLoader();
 
     loader.load('assets/Whistler_-_British_Columbia.STL', function (geometry) {
@@ -14,10 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
-        // Adjust the camera and STL object as needed
         camera.position.z = 5;
 
-        // Basic ambient light
         const ambientLight = new THREE.AmbientLight(0xaaaaaa);
         scene.add(ambientLight);
 
