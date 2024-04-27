@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const loader = new THREE.STLLoader();
     const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
 
-    loader.load('assets/Whistler_-_British_Columbia.STL', function (geometry) {
+    loader.load('assets/Cube.stl', function (geometry) {
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
