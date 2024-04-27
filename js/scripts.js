@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(renderer.domElement);
 
     const loader = new THREE.STLLoader();
-    const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+    const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
 
-    loader.load('assets/Cube.stl', function (geometry) {
+    loader.load('assets/Whistler.stl', function (geometry) {
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
