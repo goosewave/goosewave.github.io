@@ -1,3 +1,7 @@
+import * as THREE from 'three';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+
 document.addEventListener('DOMContentLoaded', function () {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -5,39 +9,39 @@ document.addEventListener('DOMContentLoaded', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    const loader = new THREE.STLLoader();
-    // Use MeshPhongMaterial with improved properties for smoother appearance
-    const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff, // White color for the material
-        specular: 0x111111, // Specular highlights to make the surface appear more shiny
-        shininess: 100, // Shininess factor to increase the specularity
-        flatShading: false // Ensure smooth shading
-    });
+    const mtlLoader = new MTLLoader();
+    mtlLoader.load('assets/lucaspoirierlogo.mtl', function (materials) {
+        materials.preload();
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load('assets/lucaspoirierlogo.obj', function (object) {
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.material.side = THREE.DoubleSide;
+                }
+            });
 
-    loader.load('assets/lucaspoirierlogo.stl', function (geometry) {
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
+            scene.add(object);
+            camera.position.set(0, 0, 100);
+            camera.lookAt(scene.position);
 
-        // Adjust the camera position to ensure the model is fully visible
-        camera.position.set(0, 0, 100); // Move the camera back to see large models
-        camera.lookAt(scene.position); // Ensure the camera is looking at the scene
+            // Lighting setup
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            directionalLight.position.set(0, 1, 1);
+            scene.add(directionalLight);
 
-        // Enhance the lighting with a directional light
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-        directionalLight.position.set(0, 1, 1);
-        scene.add(directionalLight);
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
 
-        // Add ambient light for softer shadows and smoother appearance
-        const ambientLight = new THREE.AmbientLight(0x404040);
-        scene.add(ambientLight);
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                object.rotation.x += 0.01;
+                object.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            mesh.rotation.x += 0.01; // Continuous rotation on the x-axis
-            mesh.rotation.y += 0.01; // Continuous rotation on the y-axis
-            renderer.render(scene, camera);
-        }
-
-        animate();
+            animate();
+        });
     });
 });
