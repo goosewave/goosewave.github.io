@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const loader = new THREE.STLLoader();
     const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
 
-    loader.load('assets/Whistler.stl', function (geometry) {
+    loader.load('assets/whistler2.stl', function (geometry) {
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
         // Adjust the camera
-        camera.position.set(0, 0, 100); // Move the camera back so we can see large models
+        camera.position.set(0, 0, 500); // Move the camera back so we can see large models
         camera.lookAt(scene.position); // Ensure the camera is looking at the scene
 
         // Add a directional light
