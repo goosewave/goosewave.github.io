@@ -10,11 +10,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(renderer.domElement);
 
     const mtlLoader = new MTLLoader();
-    mtlLoader.load('assets/lucaspoirierlogo.mtl', function (materials) {
+    mtlLoader.load('assets/earth.mtl', function (materials) {
         materials.preload();
         const objLoader = new OBJLoader();
         objLoader.setMaterials(materials);
-        objLoader.load('assets/lucaspoirierlogo.obj', function (object) {
+        objLoader.load('assets/earth.obj', function (object) {
             object.traverse(function (child) {
                 if (child instanceof THREE.Mesh) {
                     child.material.side = THREE.DoubleSide;
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             scene.add(object);
-            camera.position.set(0, 0, 100);
+            camera.position.set(0, 0, 7);
             camera.lookAt(scene.position);
 
             // Lighting setup
