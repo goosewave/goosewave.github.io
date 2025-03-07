@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import '../css/styles.css'; // Import the CSS file
 
 document.addEventListener('DOMContentLoaded', function () {
     // Create scene
@@ -14,36 +17,11 @@ document.addEventListener('DOMContentLoaded', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     
-    // Create a blue club shape (like a playing card club ♣)
-    const clubGroup = new THREE.Group();
-    
-    // Create three spheres for the club's lobes
-    const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    // Create a blue cube (as a placeholder while models load)
+    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
     const blueMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff });
-    
-    // Top sphere
-    const topSphere = new THREE.Mesh(sphereGeometry, blueMaterial);
-    topSphere.position.y = 0.8;
-    clubGroup.add(topSphere);
-    
-    // Left sphere
-    const leftSphere = new THREE.Mesh(sphereGeometry, blueMaterial);
-    leftSphere.position.set(-0.7, 0, 0);
-    clubGroup.add(leftSphere);
-    
-    // Right sphere
-    const rightSphere = new THREE.Mesh(sphereGeometry, blueMaterial);
-    rightSphere.position.set(0.7, 0, 0);
-    clubGroup.add(rightSphere);
-    
-    // Create a stem for the club
-    const stemGeometry = new THREE.CylinderGeometry(0.2, 0.2, 1.5, 32);
-    const stem = new THREE.Mesh(stemGeometry, blueMaterial);
-    stem.position.y = -0.75;
-    clubGroup.add(stem);
-    
-    // Add the club to the scene
-    scene.add(clubGroup);
+    const cube = new THREE.Mesh(cubeGeometry, blueMaterial);
+    scene.add(cube);
     
     // Add lighting
     const light1 = new THREE.DirectionalLight(0xffffff, 1);
@@ -61,9 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function animate() {
         requestAnimationFrame(animate);
         
-        // Rotate the club
-        clubGroup.rotation.x += 0.01;
-        clubGroup.rotation.y += 0.02;
+        // Rotate the cube
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.02;
         
         renderer.render(scene, camera);
     }

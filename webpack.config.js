@@ -21,6 +21,11 @@ module.exports = {
                     },
                 },
             },
+            // Add CSS loader support
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            },
             // Add support for loading assets
             {
                 test: /\.(png|svg|jpg|jpeg|gif|obj|mtl|stl)$/i,
