@@ -6,7 +6,7 @@ body {
     justify-content: center;
     height: 100vh;
     width: 100vw;
-    background-color: #ff00ff; /* Magenta backup color if three.js doesn't load */
+    background-color: #00ff08; 
 }
 
 canvas {
