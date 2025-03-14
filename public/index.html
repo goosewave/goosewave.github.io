@@ -3,34 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucas Poirier's Website</title>
+    <title>Lucas Poirier's Wii-inspired Portfolio</title>
     
     <!-- Standard favicon -->
     <link rel="icon" type="image/png" href="assets/lplogo.png">
     
-    <!-- Apple touch icons with cache busting -->
-    <link rel="apple-touch-icon" sizes="57x57" href="assets/icons/lplogo57.png?v=3">
-    <link rel="apple-touch-icon" sizes="60x60" href="assets/icons/lplogo60.png?v=3">
-    <link rel="apple-touch-icon" sizes="72x72" href="assets/icons/lplogo72.png?v=3">
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/icons/lplogo76.png?v=3">
-    <link rel="apple-touch-icon" sizes="114x114" href="assets/icons/lplogo114.png?v=3">
-    <link rel="apple-touch-icon" sizes="120x120" href="assets/icons/lplogo120.png?v=3">
-    <link rel="apple-touch-icon" sizes="144x144" href="assets/icons/lplogo144.png?v=3">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/lplogo152.png?v=3">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/lplogo180.png?v=3">
-    
-    <!-- Fallback for older iOS -->
-    <link rel="apple-touch-icon-precomposed" href="assets/icons/lplogo180.png?v=3">
-    
-    <!-- iOS specific settings -->
-    <meta name="apple-mobile-web-app-title" content="Lucas Poirier">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    
-    <!-- CSS will be injected by webpack -->
+    <!-- Google Fonts - Mii-like font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Three.js will insert canvas here -->
+    <!-- Loading screen (Wii-like) -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="wii-loader"></div>
+        <h2>Loading...</h2>
+    </div>
+    
+    <!-- Main content container -->
+    <div id="root"></div>
+    
+    <!-- Audio elements for Wii sounds -->
+    <audio id="wii-click" class="wii-sound" preload="auto">
+        <source src="assets/sounds/wii-click.mp3" type="audio/mp3">
+    </audio>
+    
     <script src="bundle.js"></script>
+    
+    <!-- Simple script to handle loading screen -->
+    <script>
+        window.addEventListener('load', function() {
+            // Hide loading screen after everything is loaded
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loading-screen').style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+    </script>
 </body>
 </html>

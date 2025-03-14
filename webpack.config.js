@@ -12,12 +12,15 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
+                        presets: [
+                            '@babel/preset-env',
+                            ['@babel/preset-react', { runtime: 'automatic' }]
+                        ],
                     },
                 },
             },
@@ -28,10 +31,13 @@ module.exports = {
             },
             // Add support for loading assets
             {
-                test: /\.(png|svg|jpg|jpeg|gif|obj|mtl|stl)$/i,
+                test: /\.(png|svg|jpg|jpeg|gif|obj|mtl|stl|wav|mp3)$/i,
                 type: 'asset/resource',
             },
         ],
+    },
+    resolve: {
+        extensions: ['.js', '.jsx'],
     },
     // Add source maps for better debugging
     devtool: 'source-map',
