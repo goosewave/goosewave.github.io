@@ -3,13 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucas Poirier's Website</title>
+    <title>Lucas Poirier's Wii-inspired Portfolio</title>
     
     <!-- Standard favicon -->
     <link rel="icon" type="image/png" href="assets/lplogo.png">
+    
+    <!-- Google Fonts - Mii-like font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Three.js will insert canvas here -->
+    <!-- Loading screen (Wii-like) -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="wii-loader"></div>
+        <h2>Loading...</h2>
+    </div>
+    
+    <!-- Main content container -->
+    <div id="root"></div>
+    
+    <!-- Audio elements for Wii sounds -->
+    <audio id="wii-click" class="wii-sound" preload="auto">
+        <source src="assets/sounds/wii-click.mp3" type="audio/mp3">
+    </audio>
+    
     <script src="bundle.js"></script>
+    
+    <!-- Simple script to handle loading screen -->
+    <script>
+        window.addEventListener('load', function() {
+            // Hide loading screen after everything is loaded
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loading-screen').style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
