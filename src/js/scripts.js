@@ -169,7 +169,15 @@ function App() {
   const miiPositions = generateMiiPositions(15); // 15 Mii figures
   
   return (
-    <Canvas shadows>
+    <Canvas 
+      shadows
+      gl={{ 
+        powerPreference: "high-performance",
+        antialias: true,
+        stencil: false,
+        depth: true
+      }}
+    >
       {/* Scene background color - Wii-like blue */}
       <color attach="background" args={['#87CEEB']} />
       
