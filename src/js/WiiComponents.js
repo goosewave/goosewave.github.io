@@ -13,32 +13,6 @@ export function MiiHead(props) {
     // Gentle bobbing animation
     if (headRef.current) {
       headRef.current.position.y = Math.sin(state.clock.elapsedTime) * 0.1;
-      
-      // Rotate toward mouse when hovered
-      if (hovered) {
-        headRef.current.rotation.y = THREE.MathUtils.lerp(
-          headRef.current.rotation.y,
-          (state.mouse.x * Math.PI) / 5,
-          0.1
-        );
-        headRef.current.rotation.x = THREE.MathUtils.lerp(
-          headRef.current.rotation.x,
-          (state.mouse.y * Math.PI) / 10,
-          0.1
-        );
-      } else {
-        // Return to center when not hovered
-        headRef.current.rotation.y = THREE.MathUtils.lerp(
-          headRef.current.rotation.y,
-          0,
-          0.05
-        );
-        headRef.current.rotation.x = THREE.MathUtils.lerp(
-          headRef.current.rotation.x,
-          0,
-          0.05
-        );
-      }
     }
   });
 

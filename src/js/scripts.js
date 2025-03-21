@@ -166,7 +166,7 @@ function App() {
     return positions;
   };
   
-  const miiPositions = generateMiiPositions(30); // 15 Mii figures
+  const miiPositions = generateMiiPositions(30); // 30 Mii figures
   
   return (
     <Canvas 
