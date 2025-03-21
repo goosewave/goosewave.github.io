@@ -54,22 +54,6 @@ export function MiiHead(props) {
         <sphereGeometry args={[1, 32, 32]} />
         <meshStandardMaterial color="#ffe0bd" />
       </mesh>
-      
-      {/* Eyes */}
-      <mesh position={[0.3, 0.1, 0.85]} castShadow>
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshBasicMaterial color="black" />
-      </mesh>
-      <mesh position={[-0.3, 0.1, 0.85]} castShadow>
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshBasicMaterial color="black" />
-      </mesh>
-      
-      {/* Mouth */}
-      <mesh position={[0, -0.3, 0.85]} rotation={[0, 0, 0]} castShadow>
-        <torusGeometry args={[0.3, 0.05, 16, 100, Math.PI]} />
-        <meshBasicMaterial color="black" />
-      </mesh>
     </group>
   );
 }
