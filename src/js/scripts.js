@@ -1,4 +1,4 @@
-import React, { useState, useRef, Suspense } from 'react';
+import React, { useState, useRef, Suspense, useEffect} from 'react';
 import { createRoot } from 'react-dom/client';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text, PerspectiveCamera, Sky } from '@react-three/drei';
@@ -141,14 +141,135 @@ function MiiChannelCamera() {
   return null;
 }
 
+function KeyboardControls({ controlsRef }) {
+  const { camera } = useThree();
+  const keys = useRef({});
+  const moveSpeed = 0.1;
+  const boostMultiplier = 2.0; // Speed multiplier when shift is pressed
+  const velocity = useRef(new THREE.Vector3(0, 0, 0));
+  const friction = 0.9;
+  
+  // Simple keyboard listener setup
+  useEffect(() => {
+    const handleKeyDown = (e) => { 
+      keys.current[e.key.toLowerCase()] = true;
+    };
+    
+    const handleKeyUp = (e) => { 
+      keys.current[e.key.toLowerCase()] = false;
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+  
+  // Configure OrbitControls
+  useEffect(() => {
+    if (controlsRef.current) {
+      controlsRef.current.enablePan = false;
+      controlsRef.current.enableZoom = false;
+      controlsRef.current.mouseButtons = {
+        LEFT: THREE.MOUSE.ROTATE,
+        MIDDLE: THREE.MOUSE.NONE,
+        RIGHT: THREE.MOUSE.NONE
+      };
+    }
+  }, [controlsRef]);
+  
+  useFrame(() => {
+    if (!controlsRef.current) return;
+    
+    // Get the forward and right vectors
+    const forward = new THREE.Vector3(0, 0, -1);
+    const right = new THREE.Vector3(1, 0, 0);
+    
+    // Apply camera rotation to get correct directions
+    forward.applyQuaternion(camera.quaternion);
+    right.applyQuaternion(camera.quaternion);
+    
+    // Make movement horizontal
+    forward.y = 0;
+    right.y = 0;
+    
+    if (forward.length() > 0) forward.normalize();
+    if (right.length() > 0) right.normalize();
+    
+    // Check if shift is pressed for speed boost
+    const isBoostActive = keys.current['shift'];
+    
+    // Calculate the actual movement speed with boost if applicable
+    const currentSpeed = isBoostActive ? moveSpeed * boostMultiplier : moveSpeed;
+    
+    // Calculate desired movement direction
+    const direction = new THREE.Vector3(0, 0, 0);
+    
+    if (keys.current['w']) direction.add(forward.clone().multiplyScalar(currentSpeed));
+    if (keys.current['s']) direction.add(forward.clone().multiplyScalar(-currentSpeed));
+    if (keys.current['a']) direction.add(right.clone().multiplyScalar(-currentSpeed));
+    if (keys.current['d']) direction.add(right.clone().multiplyScalar(currentSpeed));
+    
+    // Handle vertical movement with E and Q
+    let verticalMovement = 0;
+    if (keys.current['e']) verticalMovement = currentSpeed;    // E to go up
+    if (keys.current['q']) verticalMovement = -currentSpeed;   // Q to go down
+    
+    // Update velocity with momentum
+    if (direction.length() > 0) {
+      velocity.current.x = direction.x;
+      velocity.current.z = direction.z;
+    } else {
+      velocity.current.x *= friction;
+      velocity.current.z *= friction;
+    }
+    
+    // Handle vertical momentum separately
+    if (verticalMovement !== 0) {
+      velocity.current.y = verticalMovement;
+    } else {
+      velocity.current.y *= friction;
+    }
+    
+    // Stop very small movements
+    if (Math.abs(velocity.current.x) < 0.001) velocity.current.x = 0;
+    if (Math.abs(velocity.current.y) < 0.001) velocity.current.y = 0;
+    if (Math.abs(velocity.current.z) < 0.001) velocity.current.z = 0;
+    
+    // Apply velocity to camera position
+    camera.position.x += velocity.current.x;
+    camera.position.z += velocity.current.z;
+    camera.position.y += velocity.current.y;
+    
+    // Prevent going below the floor
+    if (camera.position.y < 1) {
+      camera.position.y = 1;
+      velocity.current.y = 0;
+    }
+    
+    // Update the OrbitControls target to be in front of the camera
+    const lookDistance = 5; 
+    const lookForward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+    controlsRef.current.target.copy(
+      camera.position.clone().add(lookForward.multiplyScalar(lookDistance))
+    );
+  });
+  
+  return null;
+}
+
 // Main App component
 function App() {
   const [activeSection, setActiveSection] = useState('miiChannel');
+  const orbitControlsRef = useRef();
   
   // Generate random colors for Mii figures
   const getRandomColor = () => {
-    const colors = ['#ff4444', '#44ff44', '#4444ff', '#ffff44', '#ff44ff', '#44ffff'];
-    return colors[Math.floor(Math.random() * colors.length)];
+    const colours = ['#ff4444', '#44ff44', '#4444ff', '#ffff44', '#ff44ff', '#44ffff'];
+    return colours[Math.floor(Math.random() * colours.length)];
   };
   
   // Generate random positions for Mii figures
@@ -253,16 +374,19 @@ function App() {
         {/* Other sections can be added here */}
       </Suspense>
       
+      <KeyboardControls controlsRef={orbitControlsRef}/>
+
       {/* Limited controls */}
       <OrbitControls 
-        enableZoom={true}
-        enablePan={true}
-        enableRotate={true}
-        minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI / 2.5}
-        minAzimuthAngle={-Math.PI / 4}
-        maxAzimuthAngle={Math.PI / 4}
-        target={[0, 2, 0]}
+      ref={orbitControlsRef}
+      enableZoom={false}     // Disable zooming with scroll wheel
+      enablePan={false}      // Disable panning
+      enableRotate={true}    // Allow rotation with mouse
+      rotateSpeed={0.5}      // Speed of rotation
+      minPolarAngle={Math.PI / 20}    // Limit how far down you can look
+      maxPolarAngle={Math.PI / 1.25}  // Limit how far up you can look
+      maxDistance={50}       // Maximum zoom out distance
+      target={[0, 2, 0]}     // Initial look target
       />
     </Canvas>
   );

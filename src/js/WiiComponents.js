@@ -42,38 +42,6 @@ export function WiiChannel({ position, color, icon, label, onClick }) {
     if (meshRef.current) {
       // Floating animation
       meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2 + position[0]) * 0.05;
-      
-      // Scale when hovered
-      meshRef.current.scale.x = THREE.MathUtils.lerp(
-        meshRef.current.scale.x,
-        hovered ? 1.1 : 1,
-        0.1
-      );
-      meshRef.current.scale.y = THREE.MathUtils.lerp(
-        meshRef.current.scale.y,
-        hovered ? 1.1 : 1,
-        0.1
-      );
-      meshRef.current.scale.z = THREE.MathUtils.lerp(
-        meshRef.current.scale.z,
-        hovered ? 1.1 : 1,
-        0.1
-      );
-      
-      // Push down when clicked
-      if (clicked) {
-        meshRef.current.position.z = THREE.MathUtils.lerp(
-          meshRef.current.position.z,
-          position[2] - 0.2,
-          0.1
-        );
-      } else {
-        meshRef.current.position.z = THREE.MathUtils.lerp(
-          meshRef.current.position.z,
-          position[2],
-          0.1
-        );
-      }
     }
   });
 
