@@ -97,6 +97,7 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
       if (miiData) {
         // Update existing Mii
         response = await supabase
+          
           .from('mii_characters')
           .update({
             skin_tone_u: skinToneParams.u,
@@ -108,6 +109,7 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
       } else {
         // Create new Mii
         response = await supabase
+          
           .from('mii_characters')
           .insert([{
             user_id: user.id,

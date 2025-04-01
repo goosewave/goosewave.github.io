@@ -65,6 +65,7 @@ function App() {
       
       try {
         const { data, error } = await supabase
+          
           .from('mii_characters')
           .select('*')
           .eq('user_id', user.id)
@@ -170,6 +171,7 @@ function App() {
             // Refresh Mii data
             try {
               const { data, error } = await supabase
+                
                 .from('mii_characters')
                 .select('*')
                 .eq('user_id', user.id)

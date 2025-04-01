@@ -32,6 +32,7 @@ function AuthForm({ onAuthSuccess }) {
         // Create a profile entry for the new user
         if (data?.user) {
           const { error: profileError } = await supabase
+            
             .from('profiles')
             .insert([{ id: data.user.id, email: data.user.email }]);
             

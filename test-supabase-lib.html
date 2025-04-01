@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Test with Library</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2.49.4"></script>
+</head>
+<body>
+    <h1>Supabase Test with Library</h1>
+    <div>
+        <h2>Authentication</h2>
+        <input type="email" id="email" placeholder="Email" value="lucaspoirier6@gmail.com" />
+        <input type="password" id="password" placeholder="Password" />
+        <button id="signInButton">Sign In</button>
+        <button id="signUpButton">Sign Up</button>
+        <button id="checkSessionButton">Check Session</button>
+    </div>
+    <div>
+        <h2>API Test</h2>
+        <button id="testButton">Test Supabase API</button>
+    </div>
+    <pre id="result"></pre>
+
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://xggfntnpabhuijtdingq.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZ2ZudG5wYWJodWlqdGRpbmdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0Njk4MjIsImV4cCI6MjA1OTA0NTgyMn0.Fis701SsfegDQjbt6ldBY95lnmsbvFrTfinjin7HUnc';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+        
+        // Sign In Button
+        document.getElementById('signInButton').addEventListener('click', async () => {
+            const resultElement = document.getElementById('result');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                resultElement.textContent = 'Please enter email and password';
+                return;
+            }
+            
+            resultElement.textContent = 'Signing in...';
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    resultElement.textContent = `Sign in failed: ${error.message}\n\nFull error: ${JSON.stringify(error, null, 2)}`;
+                    console.error('Sign in error:', error);
+                } else {
+                    resultElement.textContent = `Signed in successfully as ${data.user.email}!`;
+                    document.getElementById('testButton').disabled = false;
+                }
+            } catch (error) {
+                resultElement.textContent = `Error: ${error.message}`;
+                console.error('Unexpected error:', error);
+            }
+        });
+        
+        // Sign Up Button
+        document.getElementById('signUpButton').addEventListener('click', async () => {
+            const resultElement = document.getElementById('result');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                resultElement.textContent = 'Please enter email and password';
+                return;
+            }
+            
+            resultElement.textContent = 'Signing up...';
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    resultElement.textContent = `Sign up failed: ${error.message}\n\nFull error: ${JSON.stringify(error, null, 2)}`;
+                    console.error('Sign up error:', error);
+                } else if (data.user) {
+                    resultElement.textContent = `Signed up successfully! Check your email for confirmation.`;
+                    console.log('Sign up data:', data);
+                }
+            } catch (error) {
+                resultElement.textContent = `Error: ${error.message}`;
+                console.error('Unexpected error:', error);
+            }
+        });
+
+        // Check Session Button
+        document.getElementById('checkSessionButton').addEventListener('click', async () => {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = 'Checking session...';
+            
+            try {
+                const { data, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    resultElement.textContent = `Error checking session: ${error.message}`;
+                    console.error('Session error:', error);
+                } else if (data.session) {
+                    resultElement.textContent = `Active session found!\n\nUser: ${data.session.user.email}\nExpires: ${new Date(data.session.expires_at * 1000).toLocaleString()}\n\nFull session data: ${JSON.stringify(data.session, null, 2)}`;
+                    document.getElementById('testButton').disabled = false;
+                } else {
+                    resultElement.textContent = 'No active session found. Please sign in.';
+                }
+            } catch (error) {
+                resultElement.textContent = `Error: ${error.message}`;
+                console.error('Unexpected error:', error);
+            }
+        });
+
+        // Test Button
+        document.getElementById('testButton').addEventListener('click', async () => {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = 'Testing...';
+            
+            try {
+                // Get the current session
+                const { data: sessionData } = await supabase.auth.getSession();
+                
+                if (!sessionData.session) {
+                    resultElement.textContent = 'No active session. Please sign in first.';
+                    return;
+                }
+                
+                // Query the mii_characters table in the api schema
+                console.log('Querying mii_characters table in api schema...');
+                const { data: miiData, error: miiError } = await supabase
+                    .schema('api')
+                    .from('mii_characters')
+                    .select('*')
+                    .limit(10);
+                
+                if (miiError) {
+                    resultElement.textContent = `Error querying mii_characters: ${miiError.message}\n\nFull error: ${JSON.stringify(miiError, null, 2)}`;
+                    console.error('Query error:', miiError);
+                } else {
+                    resultElement.textContent = `Successfully queried mii_characters!\n\nResults (${miiData.length} rows):\n${JSON.stringify(miiData, null, 2)}`;
+                    console.log('Query results:', miiData);
+                }
+                
+                // All query attempts have been tried above
+            } catch (error) {
+                resultElement.textContent = `Error: ${error.message}`;
+                console.error('Unexpected error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
