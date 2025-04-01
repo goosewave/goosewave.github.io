@@ -1,11 +1,11 @@
--- Create profiles table
+-- Create profiles table in the public schema
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users(id) PRIMARY KEY,
   email TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create mii_characters table for storing Mii customizations
+-- Create mii_characters table for storing Mii customizations in the public schema
 CREATE TABLE IF NOT EXISTS public.mii_characters (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES auth.users(id) NOT NULL,
@@ -20,6 +20,10 @@ CREATE TABLE IF NOT EXISTS public.mii_characters (
 -- Set up Row Level Security (RLS) for profiles
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies for profiles
+DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+
 -- Create policy for profiles - users can only view their own profile
 CREATE POLICY "Users can view their own profile" 
   ON public.profiles FOR SELECT 
@@ -32,6 +36,12 @@ CREATE POLICY "Users can update their own profile"
 
 -- Set up Row Level Security (RLS) for mii_characters
 ALTER TABLE public.mii_characters ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies for mii_characters
+DROP POLICY IF EXISTS "Users can view their own Mii characters" ON public.mii_characters;
+DROP POLICY IF EXISTS "Users can create their own Mii characters" ON public.mii_characters;
+DROP POLICY IF EXISTS "Users can update their own Mii characters" ON public.mii_characters;
+DROP POLICY IF EXISTS "Users can delete their own Mii characters" ON public.mii_characters;
 
 -- Create policies for mii_characters
 CREATE POLICY "Users can view their own Mii characters" 
@@ -59,6 +69,9 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Drop the existing trigger if it exists
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
 -- Create a trigger to automatically create a profile when a user signs up
 CREATE TRIGGER on_auth_user_created
