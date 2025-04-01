@@ -18,32 +18,6 @@ function CustomizableMiiHead({ skinToneParams }) {
         <sphereGeometry args={[1, 32, 32]} />
         <meshStandardMaterial color={skinToneColor} />
       </mesh>
-      
-      {/* Eyes */}
-      <mesh position={[0.3, 0.1, 0.85]} castShadow>
-        <sphereGeometry args={[0.12, 16, 16]} />
-        <meshStandardMaterial color="#ffffff" />
-      </mesh>
-      <mesh position={[-0.3, 0.1, 0.85]} castShadow>
-        <sphereGeometry args={[0.12, 16, 16]} />
-        <meshStandardMaterial color="#ffffff" />
-      </mesh>
-      
-      {/* Pupils */}
-      <mesh position={[0.3, 0.1, 0.98]} castShadow>
-        <sphereGeometry args={[0.06, 16, 16]} />
-        <meshStandardMaterial color="#000000" />
-      </mesh>
-      <mesh position={[-0.3, 0.1, 0.98]} castShadow>
-        <sphereGeometry args={[0.06, 16, 16]} />
-        <meshStandardMaterial color="#000000" />
-      </mesh>
-      
-      {/* Mouth */}
-      <mesh position={[0, -0.3, 0.85]} castShadow>
-        <boxGeometry args={[0.5, 0.1, 0.1]} />
-        <meshStandardMaterial color="#cc6666" />
-      </mesh>
     </group>
   );
 }
