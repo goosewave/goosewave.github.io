@@ -130,3 +130,260 @@ canvas {
     width: 0;
     height: 0;
 }
+
+/* Auth Form Styles */
+.auth-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.auth-form-wrapper {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    color: #333;
+    text-align: center;
+}
+
+.auth-form-wrapper h2 {
+    color: #00a2ff;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.wii-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.wii-input:focus {
+    border-color: #00a2ff;
+    outline: none;
+}
+
+.auth-error {
+    background-color: #ffebee;
+    color: #d32f2f;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.auth-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    color: #00a2ff;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 5px;
+}
+
+.toggle-button:hover {
+    color: #0077cc;
+}
+
+/* User controls */
+.user-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.sign-out-button {
+    font-size: 16px;
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all 0.2s;
+}
+
+.sign-out-button:hover,
+.customize-button:hover {
+    background-color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.customize-button {
+    font-size: 16px;
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all 0.2s;
+}
+
+/* Mii Customizer Styles */
+.mii-customizer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 900;
+}
+
+.customizer-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .customizer-container {
+        flex-direction: row;
+    }
+}
+
+.customizer-preview {
+    flex: 1;
+    min-height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.customizer-controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+
+.slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.slider-group label {
+    font-weight: bold;
+    color: #555;
+}
+
+.wii-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: #ddd;
+    outline: none;
+}
+
+.wii-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00a2ff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wii-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    background: #0077cc;
+}
+
+.wii-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00a2ff;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.wii-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    background: #0077cc;
+}
+
+.save-button {
+    margin-top: 20px;
+    align-self: center;
+}
+
+/* Customizer header with close button */
+.customizer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.close-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
