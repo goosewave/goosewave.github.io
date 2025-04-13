@@ -2,13 +2,20 @@ import React, { useRef, useEffect } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
+// Create a custom event for speed changes
+const SPEED_CHANGE_EVENT = 'speed-multiplier-change';
+
 function KeyboardControls({ controlsRef }) {
   const { camera } = useThree();
   const keys = useRef({});
   const moveSpeed = 0.1;
-  const boostMultiplier = 2.0; // Speed multiplier when shift is pressed
+  const speedMultiplier = useRef(1.0); // Default speed multiplier
+  const minSpeedMultiplier = 0.5; // Minimum speed multiplier
+  const maxSpeedMultiplier = 3.0; // Maximum speed multiplier
   const velocity = useRef(new THREE.Vector3(0, 0, 0));
   const friction = 0.9;
+  const acceleration = 0.05; // Reduced acceleration (half of the original)
+  const altKeyPressed = useRef(false);
   
   // Simple keyboard listener setup
   useEffect(() => {
@@ -29,7 +36,7 @@ function KeyboardControls({ controlsRef }) {
     };
   }, []);
   
-  // Configure OrbitControls and handle shift key for mouse button mapping
+  // Configure OrbitControls and handle mouse button mapping
   useEffect(() => {
     if (controlsRef.current) {
       controlsRef.current.enablePan = false;
@@ -38,46 +45,73 @@ function KeyboardControls({ controlsRef }) {
       // Initial mouse button configuration
       updateMouseButtons(false);
       
-      // Function to update mouse buttons based on shift key state
-      function updateMouseButtons(isShiftPressed) {
+      // Function to update mouse buttons based on alt key state
+      function updateMouseButtons(isAltPressed) {
         if (controlsRef.current) {
-          if (isShiftPressed) {
-            // When shift is pressed, use right button for rotation
-            controlsRef.current.mouseButtons = {
-              LEFT: THREE.MOUSE.NONE,
-              MIDDLE: THREE.MOUSE.NONE,
-              RIGHT: THREE.MOUSE.ROTATE
-            };
-          } else {
-            // Normal state: use left button for rotation
+          if (isAltPressed) {
+            // When alt is pressed, use left button for rotation (for trackpad users)
             controlsRef.current.mouseButtons = {
               LEFT: THREE.MOUSE.ROTATE,
               MIDDLE: THREE.MOUSE.NONE,
+              RIGHT: THREE.MOUSE.NONE
+            };
+          } else {
+            // Normal state: use middle button for rotation
+            controlsRef.current.mouseButtons = {
+              LEFT: THREE.MOUSE.NONE,
+              MIDDLE: THREE.MOUSE.ROTATE,
               RIGHT: THREE.MOUSE.NONE
             };
           }
         }
       }
       
-      // Add event listeners for shift key
+      // Add event listeners for alt key
       const handleKeyDown = (e) => {
-        if (e.key.toLowerCase() === 'shift') {
+        if (e.key.toLowerCase() === 'alt') {
+          altKeyPressed.current = true;
           updateMouseButtons(true);
         }
       };
       
       const handleKeyUp = (e) => {
-        if (e.key.toLowerCase() === 'shift') {
+        if (e.key.toLowerCase() === 'alt') {
+          altKeyPressed.current = false;
           updateMouseButtons(false);
         }
       };
       
+      // Add scroll wheel event listener for speed modulation
+      const handleWheel = (e) => {
+        // Adjust speed multiplier based on scroll direction
+        // Negative deltaY means scrolling up, positive means scrolling down
+        const delta = -Math.sign(e.deltaY) * 0.1; // Small increment/decrement
+        
+        // Update speed multiplier within bounds
+        const newMultiplier = Math.max(
+          minSpeedMultiplier,
+          Math.min(maxSpeedMultiplier, speedMultiplier.current + delta)
+        );
+        
+        speedMultiplier.current = newMultiplier;
+        
+        // Dispatch a custom event with the new multiplier value
+        window.dispatchEvent(new CustomEvent(SPEED_CHANGE_EVENT, { 
+          detail: { multiplier: newMultiplier } 
+        }));
+        
+        // Prevent default scrolling behavior
+        e.preventDefault();
+      };
+      
       window.addEventListener('keydown', handleKeyDown);
       window.addEventListener('keyup', handleKeyUp);
+      window.addEventListener('wheel', handleWheel, { passive: false });
       
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
         window.removeEventListener('keyup', handleKeyUp);
+        window.removeEventListener('wheel', handleWheel);
       };
     }
   }, [controlsRef]);
@@ -100,11 +134,8 @@ function KeyboardControls({ controlsRef }) {
     if (forward.length() > 0) forward.normalize();
     if (right.length() > 0) right.normalize();
     
-    // Check if shift is pressed for speed boost
-    const isBoostActive = keys.current['shift'];
-    
-    // Calculate the actual movement speed with boost if applicable
-    const currentSpeed = isBoostActive ? moveSpeed * boostMultiplier : moveSpeed;
+    // Calculate the actual movement speed with current multiplier
+    const currentSpeed = moveSpeed * speedMultiplier.current;
     
     // Calculate desired movement direction
     const direction = new THREE.Vector3(0, 0, 0);
@@ -119,19 +150,23 @@ function KeyboardControls({ controlsRef }) {
     if (keys.current['e']) verticalMovement = currentSpeed;    // E to go up
     if (keys.current['q']) verticalMovement = -currentSpeed;   // Q to go down
     
-    // Update velocity with momentum
+    // Update velocity with gradual acceleration
     if (direction.length() > 0) {
-      velocity.current.x = direction.x;
-      velocity.current.z = direction.z;
+      // Gradually approach the target velocity
+      velocity.current.x += (direction.x - velocity.current.x) * acceleration;
+      velocity.current.z += (direction.z - velocity.current.z) * acceleration;
     } else {
+      // Apply friction when no keys are pressed
       velocity.current.x *= friction;
       velocity.current.z *= friction;
     }
     
-    // Handle vertical momentum separately
+    // Handle vertical momentum separately with gradual acceleration
     if (verticalMovement !== 0) {
-      velocity.current.y = verticalMovement;
+      // Gradually approach the target vertical velocity
+      velocity.current.y += (verticalMovement - velocity.current.y) * acceleration;
     } else {
+      // Apply friction when no keys are pressed
       velocity.current.y *= friction;
     }
     
@@ -182,7 +217,8 @@ function KeyboardControls({ controlsRef }) {
     }
     
     // Update the OrbitControls target to be in front of the camera
-    const lookDistance = 5; 
+    // Reduced lookDistance from 5 to 2 to bring the orbit point closer to the camera
+    const lookDistance = 0.1; 
     const lookForward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
     controlsRef.current.target.copy(
       camera.position.clone().add(lookForward.multiplyScalar(lookDistance))

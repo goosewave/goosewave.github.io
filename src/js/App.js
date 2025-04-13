@@ -12,6 +12,7 @@ import WiiMenu from './components/WiiMenu';
 import ControlsInstructions from './components/ControlsInstructions';
 import AuthForm from './components/AuthForm';
 import MiiCustomizer from './components/MiiCustomizer';
+import SpeedIndicator from './components/SpeedIndicator';
 
 // Import Supabase client
 import supabase from './utils/supabaseClient';
@@ -191,6 +192,7 @@ function App() {
       )}
       
       <ControlsInstructions />
+      <SpeedIndicator />
       <div style={{ width: '100%', height: '100%' }}>
         <Canvas 
           shadows
