@@ -131,6 +131,134 @@ canvas {
     height: 0;
 }
 
+/* Pause menu styles */
+.pause-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pause-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.pause-content {
+    position: relative;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.pause-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 64px;
+    color: white;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+}
+
+.pause-instruction {
+    font-family: 'Nunito', sans-serif;
+    font-size: 24px;
+    color: white;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Resume container, button and loader styles */
+.resume-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.resume-button {
+    padding: 12px 30px;
+    border-radius: 30px;
+    background-color: white;
+    color: #aaaaaa; /* Start with gray */
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 1.25s ease;
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
+    z-index: 2; /* Ensure button is above loader */
+    animation: button-color-change 2s ease forwards 0s;
+}
+
+.resume-button.available {
+    color: #00a2ff; /* Blue color when available */
+}
+
+@keyframes button-color-change {
+    0% { color: #aaaaaa; }
+    100% { color: #00a2ff; }
+}
+
+.resume-button:not(.available) {
+    cursor: not-allowed;
+}
+
+.resume-button:hover.available {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.1);
+}
+
+.resume-button:active.available {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.resume-loader {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    left: -80px; /* Position to the left of the button, adjusted for larger size */
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.resume-loader svg {
+    width: 100%;
+    height: 100%;
+}
+
+.resume-loader .progress-circle {
+    stroke-dashoffset: 565.48px; /* Start with full offset (invisible) */
+    animation: progress-circle 1.25s linear forwards;
+}
+
+.resume-loader.complete {
+    opacity: 0;
+    transition-delay: 0s; /* Start fade after 1.25s (when progress is complete) */
+}
+
+@keyframes progress-circle {
+    0% {
+        stroke-dashoffset: 565.48px; /* Full offset (invisible) */
+    }
+    100% {
+        stroke-dashoffset: 0; /* No offset (fully visible) */
+    }
+}
+
 /* Auth Form Styles */
 .auth-container {
     position: fixed;

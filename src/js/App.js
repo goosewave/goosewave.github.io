@@ -6,7 +6,8 @@ import * as THREE from 'three';
 // Import components
 import Floor from './components/Floor';
 import MiiFigure from './components/MiiFigure';
-import KeyboardControls from './components/KeyboardControls';
+import GameControls from './components/GameControls';
+import PauseMenu from './components/PauseMenu';
 import MiiChannelCamera from './components/MiiChannelCamera';
 import WiiMenu from './components/WiiMenu';
 import ControlsInstructions from './components/ControlsInstructions';
@@ -25,6 +26,7 @@ function App() {
   const [showCustomizer, setShowCustomizer] = useState(false);
   const [hasMii, setHasMii] = useState(false);
   const [userMii, setUserMii] = useState(null);
+  const [isPaused, setIsPaused] = useState(false);
   const orbitControlsRef = useRef();
   
   // Check for existing session on load
@@ -193,6 +195,14 @@ function App() {
       
       <ControlsInstructions user={user} />
       <SpeedIndicator />
+      <PauseMenu 
+        isPaused={isPaused} 
+        onClick={() => {
+          // The Resume button in PauseMenu will handle unpausing
+          // and will only work after the 1-second delay
+          setIsPaused(false);
+        }}
+      />
       <div style={{ width: '100%', height: '100%' }}>
         <Canvas 
           shadows
@@ -201,6 +211,20 @@ function App() {
             antialias: true,
             stencil: false,
             depth: true
+          }}
+          onClick={() => {
+            // When the canvas is clicked and the game is not paused,
+            // try to request pointer lock
+            if (!isPaused) {
+              try {
+                const canvas = document.querySelector('canvas');
+                if (canvas && document.pointerLockElement !== canvas) {
+                  canvas.requestPointerLock();
+                }
+              } catch (error) {
+                console.warn("Could not request pointer lock:", error);
+              }
+            }
           }}
         >
       {/* Scene background color - Wii-like blue */}
@@ -293,7 +317,11 @@ function App() {
       </Suspense>
       
       {/* Camera controls - Using direct camera rotation instead of OrbitControls */}
-      <KeyboardControls controlsRef={orbitControlsRef} />
+      <GameControls 
+        isPaused={isPaused} 
+        setPaused={setIsPaused} 
+        controlsRef={orbitControlsRef} 
+      />
       <OrbitControls 
         ref={orbitControlsRef}
         enabled={false}        // Disabled - using direct camera rotation instead

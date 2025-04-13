@@ -50,11 +50,11 @@ function ControlsInstructions({ user }) {
     }}>
       <h2 style={{ margin: '0 0 15px 0', color: '#4fc3f7' }}>Controls</h2>
       <ul style={{ margin: 0, paddingLeft: '20px', textAlign: 'left' }}>
-        <li><strong>Middle mouse button and drag</strong> to look around</li>
-        <li><strong>Left-click + Alt and drag</strong> for trackpad users</li>
+        <li><strong>Mouse movement</strong> to look around</li>
         <li><strong>WASD</strong> to move</li>
         <li><strong>E/Q</strong> to move up/down</li>
         <li><strong>Scroll wheel</strong> to adjust movement speed (0.5x to 3.0x)</li>
+        <li><strong>ESC</strong> to pause/unpause</li>
       </ul>
     </div>
   );
