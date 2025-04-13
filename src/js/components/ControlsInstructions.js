@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 
-function ControlsInstructions() {
+function ControlsInstructions({ user }) {
   const [visible, setVisible] = useState(true);
   
   // Hide instructions after 10 seconds
   useEffect(() => {
+    if (!user) return; // Skip effect if no user
+    
     const timer = setTimeout(() => {
       setVisible(false);
     }, 10000);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [user]);
   
   // Hide instructions when user clicks
   useEffect(() => {
+    if (!user) return; // Skip effect if no user
+    
     const handleClick = () => {
       setVisible(false);
     };
@@ -23,16 +27,17 @@ function ControlsInstructions() {
     return () => {
       window.removeEventListener('click', handleClick);
     };
-  }, []);
+  }, [user]);
   
-  if (!visible) return null;
+  // Don't render anything if no user or not visible
+  if (!user || !visible) return null;
   
   return (
     <div style={{
       position: 'absolute',
       top: '20px',
       left: '20px',
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       color: 'white',
       padding: '20px',
       borderRadius: '10px',

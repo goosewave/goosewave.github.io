@@ -191,7 +191,7 @@ function App() {
         />
       )}
       
-      <ControlsInstructions />
+      <ControlsInstructions user={user} />
       <SpeedIndicator />
       <div style={{ width: '100%', height: '100%' }}>
         <Canvas 
@@ -292,18 +292,18 @@ function App() {
         {/* Other sections can be added here */}
       </Suspense>
       
-      {/* Camera controls */}
+      {/* Camera controls - Using direct camera rotation instead of OrbitControls */}
       <KeyboardControls controlsRef={orbitControlsRef} />
       <OrbitControls 
         ref={orbitControlsRef}
+        enabled={false}        // Disabled - using direct camera rotation instead
         enableZoom={false}     // Disable zooming with scroll wheel
         enablePan={false}      // Disable panning
-        enableRotate={true}    // Allow rotation with mouse
-        rotateSpeed={0.5}      // Speed of rotation
+        enableRotate={false}   // Disable rotation with mouse
         minPolarAngle={Math.PI / 20}    // Limit how far down you can look
         maxPolarAngle={Math.PI / 1.25}  // Limit how far up you can look
         maxDistance={50}       // Maximum zoom out distance
-        target={[0, 2, 0]}     // Initial look target
+        target={[0, 2, 0]}     // Initial look target (not used with direct rotation)
       />
     </Canvas>
       </div>
