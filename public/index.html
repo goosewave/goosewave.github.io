@@ -22,7 +22,7 @@
             z-index: 9999;
             transition: opacity 0.5s;
         }
-        .wii-loader {
+        .loader {
             width: 100px;
             height: 100px;
             border-radius: 50%;
@@ -53,15 +53,15 @@
 <body>
     <!-- Loading screen (shown immediately) -->
     <div class="loading-screen" id="loading-screen">
-        <div class="wii-loader"></div>
+        <div class="loader"></div>
         <h2>Loading...</h2>
     </div>
     
     <!-- Main content container -->
     <div id="root"></div>
     
-    <!-- Audio elements for Wii sounds -->
-    <audio id="wii-click" class="wii-sound" preload="auto">
+    <!-- Audio elements for sounds -->
+    <audio id="click-sound" class="sound" preload="auto">
         <source src="assets/sounds/wii-click.mp3" type="audio/mp3">
     </audio>
     

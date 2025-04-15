@@ -5,8 +5,8 @@ import * as THREE from 'three';
 import supabase from '../utils/supabaseClient';
 import { getSkinTone } from '../utils/ColorUtils';
 
-// Simple Mii head component for the customizer
-function CustomizableMiiHead({ skinToneParams }) {
+// Simple Abstra head component for the customizer
+function CustomizableAbstraHead({ skinToneParams }) {
   const headRef = useRef();
   const { u, v, w } = skinToneParams;
   const skinToneColor = getSkinTone(u, v, w);
@@ -22,33 +22,33 @@ function CustomizableMiiHead({ skinToneParams }) {
   );
 }
 
-// MiiCustomizer component
-function MiiCustomizer({ user, existingMii = null, onComplete }) {
-  // Initialize with default values or existing Mii values if available
+// AbstraCustomiser component
+function AbstraCustomiser({ user, existingAbstra = null, onComplete }) {
+  // Initialize with default values or existing Abstra values if available
   const [skinToneParams, setSkinToneParams] = useState(
-    existingMii 
+    existingAbstra 
       ? {
-          u: existingMii.skin_tone_u,
-          v: existingMii.skin_tone_v,
-          w: existingMii.skin_tone_w
+          u: existingAbstra.skin_tone_u,
+          v: existingAbstra.skin_tone_v,
+          w: existingAbstra.skin_tone_w
         }
       : { u: 0.5, v: 0.5, w: 0.5 }
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  const [miiData, setMiiData] = useState(existingMii);
+  const [abstraData, setAbstraData] = useState(existingAbstra);
   
-  // If existingMii prop changes, update the state
+  // If existingAbstra prop changes, update the state
   useEffect(() => {
-    if (existingMii) {
-      setMiiData(existingMii);
+    if (existingAbstra) {
+      setAbstraData(existingAbstra);
       setSkinToneParams({
-        u: existingMii.skin_tone_u,
-        v: existingMii.skin_tone_v,
-        w: existingMii.skin_tone_w
+        u: existingAbstra.skin_tone_u,
+        v: existingAbstra.skin_tone_v,
+        w: existingAbstra.skin_tone_w
       });
     }
-  }, [existingMii]);
+  }, [existingAbstra]);
   
   // Handle slider changes
   const handleSliderChange = (param, value) => {
@@ -58,7 +58,7 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
     }));
   };
   
-  // Save Mii customization to database
+  // Save Abstra customization to database
   const handleSave = async () => {
     if (!user) return;
     
@@ -68,23 +68,23 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
     try {
       let response;
       
-      if (miiData) {
-        // Update existing Mii
+      if (abstraData) {
+        // Update existing Abstra
         response = await supabase
           
-          .from('mii_characters')
+          .from('abstras')
           .update({
             skin_tone_u: skinToneParams.u,
             skin_tone_v: skinToneParams.v,
             skin_tone_w: skinToneParams.w,
             updated_at: new Date()
           })
-          .eq('id', miiData.id);
+          .eq('id', abstraData.id);
       } else {
-        // Create new Mii
+        // Create new Abstra
         response = await supabase
           
-          .from('mii_characters')
+          .from('abstras')
           .insert([{
             user_id: user.id,
             skin_tone_u: skinToneParams.u,
@@ -102,8 +102,8 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
         onComplete();
       }
     } catch (error) {
-      console.error('Error saving Mii:', error);
-      setError('Failed to save your Mii. Please try again.');
+      console.error('Error saving Abstra:', error);
+      setError('Failed to save your Abstra. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -117,9 +117,9 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
   };
   
   return (
-    <div className="mii-customizer">
+    <div className="abstra-customizer">
       <div className="customizer-header">
-        <h2 className="wii-title">Customize Your Mii</h2>
+        <h2 className="title">Customize Your Abstra</h2>
         <button 
           className="close-button"
           onClick={handleCancel}
@@ -139,7 +139,7 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
           >
             <ambientLight intensity={0.6} />
             <directionalLight position={[10, 10, 5]} intensity={0.8} />
-            <CustomizableMiiHead skinToneParams={skinToneParams} />
+            <CustomizableAbstraHead skinToneParams={skinToneParams} />
             <OrbitControls enableZoom={false} />
           </Canvas>
         </div>
@@ -153,7 +153,7 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
               max="100"
               value={skinToneParams.u * 100}
               onChange={(e) => handleSliderChange('u', parseInt(e.target.value))}
-              className="wii-slider"
+              className="slider"
             />
           </div>
           
@@ -165,7 +165,7 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
               max="100"
               value={skinToneParams.v * 100}
               onChange={(e) => handleSliderChange('v', parseInt(e.target.value))}
-              className="wii-slider"
+              className="slider"
             />
           </div>
           
@@ -177,16 +177,16 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
               max="100"
               value={skinToneParams.w * 100}
               onChange={(e) => handleSliderChange('w', parseInt(e.target.value))}
-              className="wii-slider"
+              className="slider"
             />
           </div>
           
           <button 
-            className="wii-button save-button"
+            className="button save-button"
             onClick={handleSave}
             disabled={saving}
           >
-            {saving ? 'Saving...' : miiData ? 'Update Mii' : 'Save Mii'}
+            {saving ? 'Saving...' : abstraData ? 'Update Abstra' : 'Save Abstra'}
           </button>
         </div>
       </div>
@@ -194,4 +194,4 @@ function MiiCustomizer({ user, existingMii = null, onComplete }) {
   );
 }
 
-export default MiiCustomizer;
+export default AbstraCustomiser;

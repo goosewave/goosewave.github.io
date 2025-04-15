@@ -1,6 +1,6 @@
-// SoundUtils.js - Utility functions for handling Wii sounds
-export const playWiiClickSound = () => {
-  const clickSound = document.getElementById('wii-click');
+// SoundUtils.js - Utility functions for handling sounds
+export const playClickSound = () => {
+  const clickSound = document.getElementById('click-sound');
   if (clickSound) {
     // Reset the audio to the beginning if it's already playing
     clickSound.pause();

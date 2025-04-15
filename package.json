@@ -1,7 +1,7 @@
 {
   "name": "website-tester",
   "version": "1.0.0",
-  "description": "Lucas Poirier's personal Wii-inspired portfolio website",
+  "description": "Lucas Poirier's personal Abstra-themed portfolio website",
   "main": "index.js",
   "scripts": {
     "start": "webpack serve",

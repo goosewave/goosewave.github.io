@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import supabase from '../utils/supabaseClient';
 
-// Wii-themed Auth Form component
+// Auth Form component
 function AuthForm({ onAuthSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -63,7 +63,7 @@ function AuthForm({ onAuthSuccess }) {
   return (
     <div className="auth-container">
       <div className="auth-form-wrapper">
-        <h2>{isSignUp ? 'Create a Mii Account' : 'Sign In to Your Mii Account'}</h2>
+        <h2>{isSignUp ? 'Create an Abstra Account' : 'Sign In to Your Abstra Account'}</h2>
         
         {error && <div className="auth-error">{error}</div>}
         {message && <div className="auth-message">{message}</div>}
@@ -77,7 +77,7 @@ function AuthForm({ onAuthSuccess }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="wii-input"
+              className="input"
             />
           </div>
           
@@ -89,14 +89,14 @@ function AuthForm({ onAuthSuccess }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="wii-input"
+              className="input"
               minLength={6}
             />
           </div>
           
           <button 
             type="submit" 
-            className="wii-button"
+            className="button"
             disabled={loading}
           >
             {loading ? 'Loading...' : isSignUp ? 'Sign Up' : 'Sign In'}

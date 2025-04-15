@@ -3,8 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { getSkinTone } from '../utils/ColorUtils';
 
-function MiiFigure({ position = [0, 0, 0], color = '#ff0000', skinToneParams = null, isUserMii = false }) {
-  const miiRef = useRef();
+function Abstra({ position = [0, 0, 0], color = '#ff0000', skinToneParams = null, isUserAbstra = false }) {
+  const abstraRef = useRef();
   const [targetPosition, setTargetPosition] = useState(new THREE.Vector3(...position));
   const [nextMoveTime, setNextMoveTime] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
@@ -36,17 +36,17 @@ function MiiFigure({ position = [0, 0, 0], color = '#ff0000', skinToneParams = n
   const pantsColor = "#" + getPantsColor();
   
   useFrame((state) => {
-    if (!miiRef.current) return;
+    if (!abstraRef.current) return;
     
-    const currentPosition = miiRef.current.position;
+    const currentPosition = abstraRef.current.position;
     const time = state.clock.getElapsedTime();
     
-    // Special effect for user's Mii - gentle floating
-    if (isUserMii) {
-      miiRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2;
+    // Special effect for user's Abstra - gentle floating
+    if (isUserAbstra) {
+      abstraRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2;
       // Gentle rotation
-      miiRef.current.rotation.y = Math.sin(time * 0.5) * 0.5;
-      return; // Skip regular movement for user's Mii
+      abstraRef.current.rotation.y = Math.sin(time * 0.5) * 0.5;
+      return; // Skip regular movement for user's Abstra
     }
     
     // Decide if we need a new destination
@@ -74,23 +74,23 @@ function MiiFigure({ position = [0, 0, 0], color = '#ff0000', skinToneParams = n
       currentPosition.z += direction.z * walkSpeed;
       
       // Bounce effect while walking
-      miiRef.current.position.y = position[1] + Math.abs(Math.sin(time * 5)) * 0.1;
+      abstraRef.current.position.y = position[1] + Math.abs(Math.sin(time * 5)) * 0.1;
       
       // Rotate to face direction of movement
       const targetRotation = Math.atan2(direction.x, direction.z);
-      miiRef.current.rotation.y = THREE.MathUtils.lerp(
-        miiRef.current.rotation.y,
+      abstraRef.current.rotation.y = THREE.MathUtils.lerp(
+        abstraRef.current.rotation.y,
         targetRotation,
         rotationSpeed
       );
     }
   });
   
-  // Scale factor for user's Mii
-  const scale = isUserMii ? 1.5 : 1;
+  // Scale factor for user's Abstra
+  const scale = isUserAbstra ? 1.5 : 1;
   
   return (
-    <group ref={miiRef} position={position} scale={scale}>
+    <group ref={abstraRef} position={position} scale={scale}>
       {/* Body */}
       <mesh position={[0, 0.7, 0]} castShadow>
         <boxGeometry args={[0.4, 0.8, 0.25]} />
@@ -126,4 +126,4 @@ function MiiFigure({ position = [0, 0, 0], color = '#ff0000', skinToneParams = n
   );
 }
 
-export default MiiFigure;
+export default Abstra;

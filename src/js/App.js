@@ -5,14 +5,14 @@ import * as THREE from 'three';
 
 // Import components
 import Floor from './components/Floor';
-import MiiFigure from './components/MiiFigure';
+import Abstra from './components/Abstra';
 import GameControls from './components/GameControls';
 import PauseMenu from './components/PauseMenu';
-import MiiChannelCamera from './components/MiiChannelCamera';
-import WiiMenu from './components/WiiMenu';
+import Camera from './components/Camera';
+import Menu from './components/Menu';
 import ControlsInstructions from './components/ControlsInstructions';
 import AuthForm from './components/AuthForm';
-import MiiCustomizer from './components/MiiCustomizer';
+import AbstraCustomiser from './components/AbstraCustomiser';
 import SpeedIndicator from './components/SpeedIndicator';
 
 // Import Supabase client
@@ -20,12 +20,12 @@ import supabase from './utils/supabaseClient';
 
 // Main App component
 function App() {
-  const [activeSection, setActiveSection] = useState('miiChannel');
+  const [activeSection, setActiveSection] = useState('abstraChannel');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showCustomizer, setShowCustomizer] = useState(false);
-  const [hasMii, setHasMii] = useState(false);
-  const [userMii, setUserMii] = useState(null);
+  const [hasAbstra, setHasAbstra] = useState(false);
+  const [userAbstra, setUserAbstra] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
   const orbitControlsRef = useRef();
   
@@ -57,36 +57,36 @@ function App() {
     };
   }, []);
   
-  // Check if user has a Mii character and fetch Mii data
+  // Check if user has an Abstra character and fetch Abstra data
   useEffect(() => {
-    const checkForMii = async () => {
+    const checkForAbstra = async () => {
       if (!user) {
-        setHasMii(false);
-        setUserMii(null);
+        setHasAbstra(false);
+        setUserAbstra(null);
         return;
       }
       
       try {
         const { data, error } = await supabase
           
-          .from('mii_characters')
+          .from('abstras')
           .select('*')
           .eq('user_id', user.id)
           .single();
           
         if (error && error.code !== 'PGRST116') {
           // PGRST116 is the error code for "no rows returned"
-          console.error('Error checking for Mii:', error);
+          console.error('Error checking for Abstra:', error);
         }
         
-        // If data exists, user has a Mii
-        const hasMiiData = !!data;
-        setHasMii(hasMiiData);
+        // If data exists, user has an Abstra
+        const hasAbstraData = !!data;
+        setHasAbstra(hasAbstraData);
         
-        if (hasMiiData) {
-          setUserMii(data);
+        if (hasAbstraData) {
+          setUserAbstra(data);
         } else if (!showCustomizer) {
-          // If user just logged in and doesn't have a Mii, show customizer
+          // If user just logged in and doesn't have an Abstra, show customizer
           setShowCustomizer(true);
         }
       } catch (error) {
@@ -94,7 +94,7 @@ function App() {
       }
     };
     
-    checkForMii();
+    checkForAbstra();
   }, [user, showCustomizer]);
   
   // Handle opening and closing the customizer
@@ -111,14 +111,14 @@ function App() {
     }
   };
   
-  // Generate random colors for Mii figures
+  // Generate random colors for Abstra figures
   const getRandomColor = () => {
     const colours = ['#ff4444', '#44ff44', '#4444ff', '#ffff44', '#ff44ff', '#44ffff'];
     return colours[Math.floor(Math.random() * colours.length)];
   };
   
-  // Generate random positions for Mii figures
-  const generateMiiPositions = (count) => {
+  // Generate random positions for Abstra figures
+  const generateAbstraPositions = (count) => {
     const positions = [];
     for (let i = 0; i < count; i++) {
       const x = Math.random() * 30 - 15;
@@ -132,13 +132,13 @@ function App() {
     return positions;
   };
   
-  const miiPositions = generateMiiPositions(30); // 30 Mii figures
+  const abstraPositions = generateAbstraPositions(30); // 30 Abstra figures
   
   // If still loading, show a loading indicator
   if (loading) {
     return (
       <div className="loading-screen">
-        <div className="wii-loader"></div>
+        <div className="loader"></div>
         <p>Loading...</p>
       </div>
     );
@@ -152,39 +152,39 @@ function App() {
       {/* Show sign out button and customize button if user is logged in */}
       {user && (
         <div className="user-controls">
-          {hasMii && (
-            <button className="wii-button customize-button" onClick={toggleCustomizer} style={{ marginRight: '10px' }}>
-              Customize Mii
+          {hasAbstra && (
+            <button className="button customize-button" onClick={toggleCustomizer} style={{ marginRight: '10px' }}>
+              Customize Abstra
             </button>
           )}
-          <button className="wii-button sign-out-button" onClick={handleSignOut}>
+          <button className="button sign-out-button" onClick={handleSignOut}>
             Sign Out
           </button>
         </div>
       )}
       
-      {/* Show Mii customizer when needed */}
+      {/* Show Abstra customizer when needed */}
       {user && showCustomizer && (
-        <MiiCustomizer 
+        <AbstraCustomiser 
           user={user} 
-          existingMii={userMii}
+          existingAbstra={userAbstra}
           onComplete={async () => {
             setShowCustomizer(false);
             
-            // Refresh Mii data
+            // Refresh Abstra data
             try {
               const { data, error } = await supabase
                 
-                .from('mii_characters')
+                .from('abstras')
                 .select('*')
                 .eq('user_id', user.id)
                 .single();
                 
               if (error) {
-                console.error('Error fetching updated Mii:', error);
+              console.error('Error fetching updated Abstra:', error);
               } else if (data) {
-                setUserMii(data);
-                setHasMii(true);
+                setUserAbstra(data);
+                setHasAbstra(true);
               }
             } catch (error) {
               console.error('Error:', error);
@@ -227,7 +227,7 @@ function App() {
             }
           }}
         >
-      {/* Scene background color - Wii-like blue */}
+      {/* Scene background color - blue */}
       <color attach="background" args={['#87CEEB']} />
       
       {/* Lighting */}
@@ -247,33 +247,33 @@ function App() {
       <Sky sunPosition={[100, 20, 100]} />
       
       {/* Camera setup */}
-      <MiiChannelCamera />
+      <Camera />
       
       {/* Scene content */}
       <Suspense fallback={null}>
-        {activeSection === 'miiChannel' && (
+        {activeSection === 'abstraChannel' && (
           <>
             <Floor />
-            {/* User's Mii character if available */}
-            {user && userMii && (
-              <MiiFigure 
+            {/* User's Abstra character if available */}
+            {user && userAbstra && (
+              <Abstra 
                 position={[0, 0, -5]} 
                 color="#00aaff"
                 skinToneParams={{
-                  u: userMii.skin_tone_u,
-                  v: userMii.skin_tone_v,
-                  w: userMii.skin_tone_w
+                  u: userAbstra.skin_tone_u,
+                  v: userAbstra.skin_tone_v,
+                  w: userAbstra.skin_tone_w
                 }}
-                isUserMii={true}
+                isUserAbstra={true}
               />
             )}
             
-            {/* Random Mii figures walking around */}
-            {miiPositions.map((mii) => (
-              <MiiFigure 
-                key={mii.id} 
-                position={mii.position} 
-                color={mii.color} 
+            {/* Random Abstra figures walking around */}
+            {abstraPositions.map((abstra) => (
+              <Abstra 
+                key={abstra.id} 
+                position={abstra.position} 
+                color={abstra.color} 
               />
             ))}
             
@@ -301,7 +301,7 @@ function App() {
             
             {/* Navigation Menu */}
             <group position={[0, 2, -18]}>
-              <WiiMenu 
+              <Menu 
                 options={[
                   { id: 'about', label: 'About', color: '#ffaa00' },
                   { id: 'projects', label: 'Projects', color: '#00aaff' },

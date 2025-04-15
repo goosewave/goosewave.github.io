@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
 
-// Setup camera with Mii Channel view
-function MiiChannelCamera() {
+// Setup camera with Abstra Channel view
+function Camera() {
   const { camera } = useThree();
   
   useEffect(() => {
@@ -14,4 +14,4 @@ function MiiChannelCamera() {
   return null;
 }
 
-export default MiiChannelCamera;
+export default Camera;

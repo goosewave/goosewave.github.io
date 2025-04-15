@@ -1,14 +1,14 @@
 import React from 'react';
 import { Float } from '@react-three/drei';
-import WiiChannel from './WiiChannel';
+import Button from './Button';
 
-// Wii-style navigation menu
-function WiiMenu({ options, onSelect }) {
+// Navigation menu
+function Menu({ options, onSelect }) {
   return (
     <Float floatIntensity={0.5} rotationIntensity={0.2} speed={2}>
       <group>
         {options.map((option, index) => (
-          <WiiChannel
+          <Button
             key={index}
             position={[index * 3 - (options.length - 1) * 1.5, 0, 0]}
             color={option.color}
@@ -21,4 +21,4 @@ function WiiMenu({ options, onSelect }) {
   );
 }
 
-export default WiiMenu;
+export default Menu;

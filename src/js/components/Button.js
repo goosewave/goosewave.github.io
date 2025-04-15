@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
-import { playWiiClickSound } from '../SoundUtils';
+import { playClickSound } from '../SoundUtils';
 
-// Wii-style floating channel/button
-function WiiChannel({ position, color, icon, label, onClick }) {
+// Floating button component
+function Button({ position, color, icon, label, onClick }) {
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
   const meshRef = useRef();
@@ -28,7 +28,7 @@ function WiiChannel({ position, color, icon, label, onClick }) {
         onPointerUp={() => {
           setClicked(false);
           if (hovered && onClick) {
-            playWiiClickSound(); // Play click sound
+            playClickSound(); // Play click sound
             onClick();
           }
         }}
@@ -61,4 +61,4 @@ function WiiChannel({ position, color, icon, label, onClick }) {
   );
 }
 
-export default WiiChannel;
+export default Button;
