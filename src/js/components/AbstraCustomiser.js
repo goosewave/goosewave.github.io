@@ -119,7 +119,7 @@ function AbstraCustomiser({ user, existingAbstra = null, onComplete }) {
   return (
     <div className="abstra-customizer">
       <div className="customizer-header">
-        <h2 className="title">Customize Your Abstra</h2>
+        <h2 className="title">Customise Your Abstra</h2>
         <button 
           className="close-button"
           onClick={handleCancel}

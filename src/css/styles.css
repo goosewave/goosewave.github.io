@@ -270,7 +270,7 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1100; /* Increased z-index to appear above pause menu */
 }
 
 .auth-form-wrapper {
@@ -370,12 +370,12 @@ canvas {
 }
 
 .sign-out-button:hover,
-.customize-button:hover {
+.customise-button:hover {
     background-color: #ffffff;
     transform: translateY(-2px);
 }
 
-.customize-button {
+.customise-button {
     font-size: 16px;
     padding: 8px 16px;
     background-color: rgba(255, 255, 255, 0.9);
@@ -394,7 +394,7 @@ canvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 900;
+    z-index: 1100; /* Increased z-index to appear above pause menu */
 }
 
 .customizer-container {

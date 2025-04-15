@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function PauseMenu({ isPaused, onClick }) {
+function PauseMenu({ isPaused, onClick, user, hasAbstra, onCustomize, onSignOut }) {
   const [isResumeAvailable, setIsResumeAvailable] = useState(false);
   
   // Timer effect when paused
@@ -63,6 +63,20 @@ function PauseMenu({ isPaused, onClick }) {
             Resume
           </button>
         </div>
+        
+        {/* User controls - only shown when paused and user is logged in */}
+        {user && (
+          <div className="user-controls">
+            {hasAbstra && (
+              <button className="button customise-button" onClick={onCustomize} style={{ marginRight: '10px' }}>
+                Customise Abstra
+              </button>
+            )}
+            <button className="button sign-out-button" onClick={onSignOut}>
+              Sign Out
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

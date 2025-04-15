@@ -149,20 +149,6 @@ function App() {
       {/* Show auth form if no user is logged in */}
       {!user && <AuthForm onAuthSuccess={setUser} />}
       
-      {/* Show sign out button and customize button if user is logged in */}
-      {user && (
-        <div className="user-controls">
-          {hasAbstra && (
-            <button className="button customize-button" onClick={toggleCustomizer} style={{ marginRight: '10px' }}>
-              Customize Abstra
-            </button>
-          )}
-          <button className="button sign-out-button" onClick={handleSignOut}>
-            Sign Out
-          </button>
-        </div>
-      )}
-      
       {/* Show Abstra customizer when needed */}
       {user && showCustomizer && (
         <AbstraCustomiser 
@@ -202,6 +188,10 @@ function App() {
           // and will only work after the 1-second delay
           setIsPaused(false);
         }}
+        user={user}
+        hasAbstra={hasAbstra}
+        onCustomize={toggleCustomizer}
+        onSignOut={handleSignOut}
       />
       <div style={{ width: '100%', height: '100%' }}>
         <Canvas 
