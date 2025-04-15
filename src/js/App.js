@@ -26,8 +26,11 @@ function App() {
   const [showCustomizer, setShowCustomizer] = useState(false);
   const [hasAbstra, setHasAbstra] = useState(false);
   const [userAbstra, setUserAbstra] = useState(null);
+  const [allUserAbstras, setAllUserAbstras] = useState([]);
   const [isPaused, setIsPaused] = useState(false);
   const orbitControlsRef = useRef();
+  // Store persistent Abstra properties
+  const [abstraProperties, setAbstraProperties] = useState({});
   
   // Check for existing session on load
   useEffect(() => {
@@ -97,6 +100,92 @@ function App() {
     checkForAbstra();
   }, [user, showCustomizer]);
   
+  // Fetch all user abstras from the database
+  useEffect(() => {
+    const fetchAllAbstras = async () => {
+      try {
+        // First, fetch all abstras
+        const { data: abstrasData, error: abstrasError } = await supabase
+          .from('abstras')
+          .select('*');
+          
+        if (abstrasError) {
+          console.error('Error fetching abstras:', abstrasError);
+          return;
+        }
+        
+        if (!abstrasData || abstrasData.length === 0) {
+          setAllUserAbstras([]);
+          return;
+        }
+        
+        // Now fetch all profiles to get the email addresses
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('*');
+          
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+          return;
+        }
+        
+        // Create a map of user_id to email for quick lookup
+        const userEmailMap = {};
+        profilesData.forEach(profile => {
+          userEmailMap[profile.id] = profile.email;
+        });
+        
+        // Process the abstras data to include username
+        const processedData = abstrasData.map(abstra => {
+          const email = userEmailMap[abstra.user_id] || '';
+          const username = email.split('@')[0];
+          
+          return {
+            ...abstra,
+            email,
+            username
+          };
+        });
+        
+        setAllUserAbstras(processedData);
+        
+        // Initialize persistent properties for any new abstras
+        setAbstraProperties(prevProps => {
+          const newProps = {...prevProps};
+          processedData.forEach(abstra => {
+            if (!newProps[abstra.id]) {
+              newProps[abstra.id] = {
+                position: generateRandomPosition(),
+                color: getRandomColor()
+              };
+            }
+          });
+          return newProps;
+        });
+      } catch (error) {
+        console.error('Error in fetchAllAbstras:', error);
+      }
+    };
+    
+    fetchAllAbstras();
+    
+    // Set up a subscription to listen for changes in the abstras table
+    const abstraSubscription = supabase
+      .channel('abstras-changes')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'abstras' 
+      }, () => {
+        fetchAllAbstras();
+      })
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(abstraSubscription);
+    };
+  }, []);
+  
   // Handle opening and closing the customizer
   const toggleCustomizer = () => {
     setShowCustomizer(prev => !prev);
@@ -117,22 +206,12 @@ function App() {
     return colours[Math.floor(Math.random() * colours.length)];
   };
   
-  // Generate random positions for Abstra figures
-  const generateAbstraPositions = (count) => {
-    const positions = [];
-    for (let i = 0; i < count; i++) {
-      const x = Math.random() * 30 - 15;
-      const z = Math.random() * 30 - 15;
-      positions.push({
-        id: i,
-        position: [x, 0, z],
-        color: getRandomColor()
-      });
-    }
-    return positions;
+  // Generate random positions for user abstras
+  const generateRandomPosition = () => {
+    const x = Math.random() * 30 - 15;
+    const z = Math.random() * 30 - 15;
+    return [x, 0, z];
   };
-  
-  const abstraPositions = generateAbstraPositions(30); // 30 Abstra figures
   
   // If still loading, show a loading indicator
   if (loading) {
@@ -244,27 +323,22 @@ function App() {
         {activeSection === 'abstraChannel' && (
           <>
             <Floor />
-            {/* User's Abstra character if available */}
-            {user && userAbstra && (
-              <Abstra 
-                position={[0, 0, -5]} 
-                color="#00aaff"
-                skinToneParams={{
-                  u: userAbstra.skin_tone_u,
-                  v: userAbstra.skin_tone_v,
-                  w: userAbstra.skin_tone_w
-                }}
-                isUserAbstra={true}
-              />
-            )}
-            
-            {/* Random Abstra figures walking around */}
-            {abstraPositions.map((abstra) => (
-              <Abstra 
-                key={abstra.id} 
-                position={abstra.position} 
-                color={abstra.color} 
-              />
+            {/* All user abstras walking around */}
+            {allUserAbstras.map((abstra, index) => (
+              abstraProperties[abstra.id] && (
+                <Abstra 
+                  key={abstra.id}
+                  position={abstraProperties[abstra.id].position}
+                  color={abstraProperties[abstra.id].color}
+                  skinToneParams={{
+                    u: abstra.skin_tone_u,
+                    v: abstra.skin_tone_v,
+                    w: abstra.skin_tone_w
+                  }}
+                  username={abstra.username}
+                  isCurrentUser={user && abstra.user_id === user.id}
+                />
+              )
             ))}
             
             {/* Title text */}

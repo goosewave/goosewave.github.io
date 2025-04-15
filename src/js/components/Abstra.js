@@ -1,9 +1,46 @@
 import React, { useRef, useState, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
+import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { getSkinTone } from '../utils/ColorUtils';
 
-function Abstra({ position = [0, 0, 0], color = '#ff0000', skinToneParams = null, isUserAbstra = false }) {
+// Username label component that always faces the camera
+function UsernameLabel({ position, username }) {
+  const textRef = useRef();
+  const { camera } = useThree();
+  
+  useFrame(() => {
+    if (textRef.current) {
+      // Make the text always face the camera
+      textRef.current.lookAt(camera.position);
+    }
+  });
+  
+  return (
+    <group ref={textRef} position={position}>
+      <Text
+        position={[0, 0, 0]}
+        fontSize={0.5}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        font="/assets/fonts/Nunito-Bold.ttf"
+        outlineWidth={0.05}
+        outlineColor="#000000"
+      >
+        {username}
+      </Text>
+    </group>
+  );
+}
+
+function Abstra({ 
+  position = [0, 0, 0], 
+  color = '#ff0000', 
+  skinToneParams = null, 
+  isCurrentUser = false,
+  username = null 
+}) {
   const abstraRef = useRef();
   const [targetPosition, setTargetPosition] = useState(new THREE.Vector3(...position));
   const [nextMoveTime, setNextMoveTime] = useState(0);
@@ -41,14 +78,13 @@ function Abstra({ position = [0, 0, 0], color = '#ff0000', skinToneParams = null
     const currentPosition = abstraRef.current.position;
     const time = state.clock.getElapsedTime();
     
-    // Special effect for user's Abstra - gentle floating
-    if (isUserAbstra) {
-      abstraRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2;
-      // Gentle rotation
-      abstraRef.current.rotation.y = Math.sin(time * 0.5) * 0.5;
-      return; // Skip regular movement for user's Abstra
+    // Special effect for current user's Abstra - make it slightly larger
+    if (isCurrentUser) {
+      // Add a gentle floating effect for the current user's Abstra
+      abstraRef.current.position.y = position[1] + Math.sin(time * 2) * 0.1;
     }
     
+    // All abstras now have random walking behavior
     // Decide if we need a new destination
     if (time > nextMoveTime) {
       if (isMoving) {
@@ -86,11 +122,15 @@ function Abstra({ position = [0, 0, 0], color = '#ff0000', skinToneParams = null
     }
   });
   
-  // Scale factor for user's Abstra
-  const scale = isUserAbstra ? 1.5 : 1;
+  // Scale factor for current user's Abstra
+  const scale = isCurrentUser ? 1.3 : 1;
   
   return (
     <group ref={abstraRef} position={position} scale={scale}>
+      {/* Username label */}
+      {username && (
+        <UsernameLabel position={[0, 2.2, 0]} username={username} />
+      )}
       {/* Body */}
       <mesh position={[0, 0.7, 0]} castShadow>
         <boxGeometry args={[0.4, 0.8, 0.25]} />
