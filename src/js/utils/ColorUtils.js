@@ -22,14 +22,14 @@ export function labToXyz(L, a, b) {
     if (t > delta) {
       return Math.pow(t, 3);
     }
-    return 3 * Math.pow(delta, 2) * (t - 4/29);
+    return 3 * Math.pow(delta, 2) * (t - 4 / 29);
   };
 
   // D65 reference white
   const xVal = 0.95047 * fInv(x);
   const yVal = 1.00000 * fInv(y);
   const zVal = 1.08883 * fInv(z);
-  
+
   return [xVal, yVal, zVal];
 }
 
@@ -42,13 +42,13 @@ export function labToXyz(L, a, b) {
  */
 export function xyzToSrgb(x, y, z) {
   // XYZ -> Linear RGB
-  const rLin =  3.2406 * x - 1.5372 * y - 0.4986 * z;
+  const rLin = 3.2406 * x - 1.5372 * y - 0.4986 * z;
   const gLin = -0.9689 * x + 1.8758 * y + 0.0415 * z;
-  const bLin =  0.0557 * x - 0.2040 * y + 1.0570 * z;
+  const bLin = 0.0557 * x - 0.2040 * y + 1.0570 * z;
 
   // Linear -> Gamma-corrected (sRGB)
   const gammaCorrect = (c) => {
-    return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1/2.4) - 0.055;
+    return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
   };
 
   const r = gammaCorrect(rLin);
@@ -76,33 +76,40 @@ export function labToSrgb(L, a, b) {
 }
 
 /**
- * Maps [0..1] x 3 -> L*, a*, b* using an expanded region
- * to capture both light and very dark skin tones.
- * @param {number} u - Controls lightness (0-1)
- * @param {number} v - Controls green-red undertone (0-1)
- * @param {number} w - Controls blue-yellow undertone (0-1)
+ * Maps [0..1] x 3 -> L*, C*, h -> L*, a*, b* -> sRGB
+ * Uses Cylindrical LCh model for more realistic skin tones.
+ * @param {number} u - Controls Lightness (L) [0..1] -> [20..95]
+ * @param {number} v - Controls Chroma (C) [0..1] -> [10..45]
+ * @param {number} w - Controls Hue (h) [0..1] -> [35..75] degrees
  * @returns {string} Hex color code (#RRGGBB)
  */
 export function getSkinTone(u, v, w) {
-  // Expanded bounding region for a broader set of undertones:
-  //   L in [10..90]  (darker to lighter)
-  //   a in [0..30]   (greenish to reddish)
-  //   b in [10..40]  (bluish to yellowish)
-  const L_min = 10, L_max = 90;
-  const a_min = 0, a_max = 30;
-  const b_min = 10, b_max = 40;
+  // 1. Map inputs to LCh ranges
+  // Lightness: 20 (Dark) to 95 (Light)
+  const L = 20 + u * (95 - 20);
 
-  const L = L_min + u * (L_max - L_min);
-  const A = a_min + v * (a_max - a_min);
-  const B = b_min + w * (b_max - b_min);
+  // Chroma: 10 (Ashy) to 45 (Vibrant)
+  const C = 10 + v * (45 - 10);
 
-  const [r, g, b] = labToSrgb(L, A, B);
-  
-  // Convert floats [0..1] to #RRGGBB
+  // Hue: 35 (Red/Pink) to 75 (Yellow/Olive)
+  const h_degrees = 35 + w * (75 - 35);
+
+  // 2. Convert Polar (L, C, h) to Cartesian (L, a, b)
+  // a = C * cos(h)
+  // b = C * sin(h)
+  // Note: Math.cos/sin expect radians
+  const h_radians = h_degrees * (Math.PI / 180);
+  const a_val = C * Math.cos(h_radians);
+  const b_val = C * Math.sin(h_radians);
+
+  // 3. Convert Lab to sRGB
+  const [r, g, b] = labToSrgb(L, a_val, b_val);
+
+  // 4. Convert floats [0..1] to #RRGGBB
   const toHex = (c) => {
     const hex = Math.round(c * 255).toString(16).padStart(2, '0');
     return hex;
   };
-  
+
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }

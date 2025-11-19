@@ -129,25 +129,21 @@ function App() {
           return;
         }
 
-        // Create a map of user_id to email for quick lookup
-        // const userEmailMap = {};
-        // profilesData.forEach(profile => {
-        //   userEmailMap[profile.id] = profile.email;
-        // });
-
         // Process the abstras data to include username
-        const processedData = abstrasData.map(abstra => {
-          const profile = profilesData.find(p => p.id === abstra.user_id);
-          const email = profile ? profile.email : '';
-          // Use username from profile, or fallback to email part
-          const username = (profile && profile.username) ? profile.username : email.split('@')[0];
+        const processedData = abstrasData
+          .map(abstra => {
+            const profile = profilesData.find(p => p.id === abstra.user_id);
+            const email = profile ? profile.email : '';
+            // Use username from profile, or fallback to email part
+            const username = (profile && profile.username) ? profile.username : email.split('@')[0];
 
-          return {
-            ...abstra,
-            email,
-            username
-          };
-        });
+            return {
+              ...abstra,
+              email,
+              username
+            };
+          })
+          .filter(abstra => abstra.email !== ''); // Remove abstras with no associated profile
 
         setAllUserAbstras(processedData);
 
