@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     mode: 'development', // Change to 'production' for minified code
@@ -57,5 +58,6 @@ module.exports = {
                 { from: 'public', to: '' }
             ],
         }),
+        new Dotenv(),
     ],
 };
