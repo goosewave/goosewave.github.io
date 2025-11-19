@@ -84,20 +84,29 @@ export function labToSrgb(L, a, b) {
  * @returns {string} Hex color code (#RRGGBB)
  */
 export function getSkinTone(u, v, w) {
-  // 1. Map inputs to LCh ranges
-  // Lightness: 20 (Dark) to 95 (Light)
-  const L = 20 + u * (95 - 20);
+  // 1. Map inputs to LCh ranges with dynamic gamut mapping
 
-  // Chroma: 10 (Ashy) to 45 (Vibrant)
-  const C = 10 + v * (45 - 10);
+  // Lightness (u) Curve: Square root curve to bias toward lighter tones
+  const u_effective = Math.sqrt(u);
 
-  // Hue: 35 (Red/Pink) to 75 (Yellow/Olive)
-  const h_degrees = 35 + w * (75 - 35);
+  // Vibrancy (v) Floor: Remap to [0.25, 1.0]
+  const v_effective = 0.25 + (v * 0.75);
+
+  // Lightness (L): 25 to 98 using u_effective
+  const L = 25 + u_effective * (98 - 25);
+
+  // Chroma (C): Dynamic based on Lightness to prevent neon artifacts on pale skin
+  // Tapers saturation for pale skin.
+  const max_C = 35 - (u_effective * 15);
+  const min_C = 8 - (u_effective * 5);
+  const C = min_C + v_effective * (max_C - min_C);
+
+  // Hue (h): 25 (Cool/Pink) to 65 (Warm/Olive) degrees
+  const h_degrees = 25 + w * (65 - 25);
 
   // 2. Convert Polar (L, C, h) to Cartesian (L, a, b)
   // a = C * cos(h)
   // b = C * sin(h)
-  // Note: Math.cos/sin expect radians
   const h_radians = h_degrees * (Math.PI / 180);
   const a_val = C * Math.cos(h_radians);
   const b_val = C * Math.sin(h_radians);
@@ -107,7 +116,8 @@ export function getSkinTone(u, v, w) {
 
   // 4. Convert floats [0..1] to #RRGGBB
   const toHex = (c) => {
-    const hex = Math.round(c * 255).toString(16).padStart(2, '0');
+    const clamped = Math.max(0, Math.min(1, c));
+    const hex = Math.round(clamped * 255).toString(16).padStart(2, '0');
     return hex;
   };
 
