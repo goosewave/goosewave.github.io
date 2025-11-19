@@ -5,6 +5,7 @@ import supabase from '../utils/supabaseClient';
 function AuthForm({ onAuthSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState(''); // Add username state
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -26,16 +27,19 @@ function AuthForm({ onAuthSuccess }) {
         });
 
         if (error) throw error;
-        
+
         setMessage('Check your email for the confirmation link!');
-        
+
         // Create a profile entry for the new user
         if (data?.user) {
           const { error: profileError } = await supabase
-            
             .from('profiles')
-            .insert([{ id: data.user.id, email: data.user.email }]);
-            
+            .insert([{
+              id: data.user.id,
+              email: data.user.email,
+              username: username // Add username to profile
+            }]);
+
           if (profileError) console.error('Error creating profile:', profileError);
         }
       } else {
@@ -46,7 +50,7 @@ function AuthForm({ onAuthSuccess }) {
         });
 
         if (error) throw error;
-        
+
         // Call the onAuthSuccess callback with the user data
         if (onAuthSuccess && data?.user) {
           onAuthSuccess(data.user);
@@ -64,11 +68,26 @@ function AuthForm({ onAuthSuccess }) {
     <div className="auth-container">
       <div className="auth-form-wrapper">
         <h2>{isSignUp ? 'Create an Abstra Account' : 'Sign In to Your Abstra Account'}</h2>
-        
+
         {error && <div className="auth-error">{error}</div>}
         {message && <div className="auth-message">{message}</div>}
-        
+
         <form onSubmit={handleSubmit} className="auth-form">
+          {isSignUp && (
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="input"
+                placeholder="Preferred Username"
+              />
+            </div>
+          )}
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -80,7 +99,7 @@ function AuthForm({ onAuthSuccess }) {
               className="input"
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
@@ -93,19 +112,19 @@ function AuthForm({ onAuthSuccess }) {
               minLength={6}
             />
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className="button"
             disabled={loading}
           >
             {loading ? 'Loading...' : isSignUp ? 'Sign Up' : 'Sign In'}
           </button>
         </form>
-        
+
         <div className="auth-toggle">
-          <button 
-            onClick={() => setIsSignUp(!isSignUp)} 
+          <button
+            onClick={() => setIsSignUp(!isSignUp)}
             className="toggle-button"
           >
             {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
